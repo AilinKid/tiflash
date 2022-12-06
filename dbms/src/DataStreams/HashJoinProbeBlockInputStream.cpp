@@ -57,7 +57,7 @@ Block HashJoinProbeBlockInputStream::readImpl()
     if (!res)
         return res;
 
-    join_probe_actions->execute(res);
+    join_probe_actions->execute(res);   // probe 端的流从 probe 孩子读出来，经过 probe 端的 actions 之后，输出 block，这里的 actions 有一个就是 join 的动作
 
     // TODO split block if block.size() > settings.max_block_size
     // https://github.com/pingcap/tiflash/issues/3436

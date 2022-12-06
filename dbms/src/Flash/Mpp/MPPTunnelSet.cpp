@@ -109,9 +109,11 @@ void MPPTunnelSetBase<Tunnel>::write(mpp::MPPDataPacket & packet, int16_t partit
 template <typename Tunnel>
 void MPPTunnelSetBase<Tunnel>::registerTunnel(const MPPTaskId & receiver_task_id, const TunnelPtr & tunnel)
 {
+    // tunnel 注册在 map 里面
     if (receiver_task_id_to_index_map.find(receiver_task_id) != receiver_task_id_to_index_map.end())
         throw Exception(fmt::format("the tunnel {} has been registered", tunnel->id()));
 
+    // tunnel 就是个 vector
     receiver_task_id_to_index_map[receiver_task_id] = tunnels.size();
     tunnels.push_back(tunnel);
     if (!tunnel->isLocal())

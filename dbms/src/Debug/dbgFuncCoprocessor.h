@@ -23,6 +23,7 @@
 #include <Debug/MockExecutor/ExecutorBinder.h>
 #include <Debug/MockExecutor/JoinBinder.h>
 #include <Debug/MockExecutor/LimitBinder.h>
+#include <Debug/MockExecutor/RepeatSourceBinder.h>
 #include <Debug/MockExecutor/ProjectBinder.h>
 #include <Debug/MockExecutor/SelectionBinder.h>
 #include <Debug/MockExecutor/SortBinder.h>

@@ -54,6 +54,7 @@ grpc::Status MPPHandler::execute(const ContextPtr & context, mpp::DispatchTaskRe
         Stopwatch stopwatch;
         task = MPPTask::newTask(task_request.meta(), context);
 
+        // 注册一些 tunnel
         task->prepare(task_request);
         for (const auto & table_region_info : context->getDAGContext()->tables_regions_info.getTableRegionsInfoMap())
         {
@@ -73,6 +74,7 @@ grpc::Status MPPHandler::execute(const ContextPtr & context, mpp::DispatchTaskRe
         {
             FAIL_POINT_TRIGGER_EXCEPTION(FailPoints::exception_before_mpp_non_root_task_run);
         }
+        // 所需要的东西，放包到了 DAGContext 里面
         task->run();
         LOG_INFO(log, "processing dispatch is over; the time cost is {} ms", stopwatch.elapsedMilliseconds());
     }

@@ -108,6 +108,7 @@ void MPPTask::finishWrite()
 
 void MPPTask::run()
 {
+    // 用线程池 schedule 任务并 detach
     newThreadManager()->scheduleThenDetach(true, "MPPTask", [self = shared_from_this()] { self->runImpl(); });
 }
 
@@ -169,6 +170,7 @@ void MPPTask::initExchangeReceivers()
             if (status != RUNNING)
                 throw Exception("exchange receiver map can not be initialized, because the task is not in running state");
 
+            // 因为是 push mode，收到 data 之后我再动
             receiver_set_local->addExchangeReceiver(executor_id, exchange_receiver);
             new_thread_count_of_exchange_receiver += exchange_receiver->computeNewThreadCount();
         }
@@ -314,6 +316,7 @@ void MPPTask::prepare(const mpp::DispatchTaskRequest & task_request)
 void MPPTask::preprocess()
 {
     auto start_time = Clock::now();
+    // 注册一些 receiver
     initExchangeReceivers();
     executeQuery(*context);
     {
@@ -354,6 +357,7 @@ void MPPTask::runImpl()
         schedule_entry.setNeededThreads(estimateCountOfNewThreads());
         LOG_DEBUG(log, "Estimate new thread count of query: {} including tunnel_threads: {}, receiver_threads: {}", schedule_entry.getNeededThreads(), dag_context->tunnel_set->getRemoteTunnelCnt(), new_thread_count_of_exchange_receiver);
 
+        // 类似 golang 等 channel 的过程
         scheduleOrWait();
 
         LOG_INFO(log, "task starts running");
