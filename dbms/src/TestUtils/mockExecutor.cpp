@@ -18,6 +18,7 @@
 #include <Debug/MockExecutor/ExchangeSenderBinder.h>
 #include <Debug/MockExecutor/ExecutorBinder.h>
 #include <Debug/MockExecutor/ExpandBinder.h>
+#include <Debug/MockExecutor/ExpandBinder2.h>
 #include <Debug/MockExecutor/JoinBinder.h>
 #include <Debug/MockExecutor/LimitBinder.h>
 #include <Debug/MockExecutor/ProjectBinder.h>
@@ -390,6 +391,23 @@ DAGRequestBuilder & DAGRequestBuilder::expand(MockVVecColumnNameVec grouping_set
         grouping_sets_ast.emplace_back(std::move(grouping_set_ast));
     }
     root = compileExpand(root, getExecutorIndex(), grouping_sets_ast, grouping_col_collection);
+    return *this;
+}
+
+DAGRequestBuilder & DAGRequestBuilder::expand2(std::vector<MockAstVec> level_projection_expressions, std::vector<String> output_names, std::vector<tipb::FieldType> fts)
+{
+    assert(root);
+    std::vector<std::shared_ptr<DB::IAST>> expression_list_vec;
+    for (const auto & one_level_proj : level_projection_expressions)
+    {
+        auto exp_list = std::make_shared<ASTExpressionList>();
+        for (const auto & proj_expr : one_level_proj)
+        {
+            exp_list->children.push_back(proj_expr);
+        }
+        expression_list_vec.push_back(exp_list);
+    }
+    root = mock::compileExpand2(root, getExecutorIndex(), expression_list_vec, output_names, fts);
     return *this;
 }
 

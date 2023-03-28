@@ -147,6 +147,7 @@ public:
 
     // expand
     DAGRequestBuilder & expand(MockVVecColumnNameVec grouping_set_columns);
+    DAGRequestBuilder & expand2(std::vector<MockAstVec> level_projection_expressions, std::vector<String> output_names, std::vector<tipb::FieldType> fps);
 
     void setCollation(Int32 collator_) { properties.collator = convertToTiDBCollation(collator_); }
     Int32 getCollation() const { return abs(properties.collator); }

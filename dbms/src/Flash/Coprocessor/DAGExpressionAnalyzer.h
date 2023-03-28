@@ -209,6 +209,10 @@ public:
         const std::vector<ExtraCastAfterTSMode> & need_cast_column,
         const ColumnInfos & table_scan_columns);
 
+    void addNullableActionForColumnRef(
+        const tipb::Expr & expr,
+        const ExpressionActionsPtr & actions);
+
 #ifndef DBMS_PUBLIC_GTEST
 private:
 #endif
